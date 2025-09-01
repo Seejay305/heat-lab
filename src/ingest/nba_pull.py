@@ -10,6 +10,7 @@ Notes:
 - Respects a simple rate limit (NBA_API_RATE_LIMIT env). Default 0.6s between calls.
 - Safe to rerun; skips files unless --overwrite.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -72,7 +73,9 @@ def save_pbp_for_game(game_id: str, season: str, overwrite: bool = False) -> Pat
     return out_path
 
 
-def pull_team_pbp(team_abbr: str, seasons: Iterable[str], limit: int | None, overwrite: bool) -> None:
+def pull_team_pbp(
+    team_abbr: str, seasons: Iterable[str], limit: int | None, overwrite: bool
+) -> None:
     team_id = get_team_id(team_abbr)
     games = find_team_games(team_id, seasons)
     if games.empty:
@@ -100,8 +103,12 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help="Seasons like 2022-23 2023-24",
     )
-    p.add_argument("--limit", type=int, default=5, help="Limit number of games for quick runs")
-    p.add_argument("--overwrite", action="store_true", help="Overwrite cached parquet files")
+    p.add_argument(
+        "--limit", type=int, default=5, help="Limit number of games for quick runs"
+    )
+    p.add_argument(
+        "--overwrite", action="store_true", help="Overwrite cached parquet files"
+    )
     return p.parse_args()
 
 

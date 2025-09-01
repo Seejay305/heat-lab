@@ -1,180 +1,390 @@
+"""
+enrich_possessions.py
+
+Build possession-level labels from raw play-by-play + the (GAME_ID, PERIOD, EVENTNUM)→POSS_SEQ map.
+
+Outputs
+-------
+data/processed/possessions_enriched.csv
+  Columns (minimum):
+    GAME_ID, POSS_SEQ, PERIOD, MARGIN_PRE, MARGIN_POST, POINTS, RESULT_CLASS, TEAM
+
+Assumptions
+-----------
+- Raw PBP parquet per game exists under data/raw/pbp/<SEASON>/<GAME_ID>.parquet
+- Event→possession map exists at data/processed/event_possess_map.parquet
+- PBP parquet has standard NBA stats columns including: GAME_ID, EVENTNUM, PERIOD,
+  SCORE, SCOREMARGIN, HOMEDESCRIPTION, VISITORDESCRIPTION, NEUTRALDESCRIPTION,
+  PLAYER1_TEAM_ABBREVIATION/PLAYER2_TEAM_ABBREVIATION (optional).
+
+Usage
+-----
+python -m src.features.enrich_possessions
+"""
+
 from __future__ import annotations
-import re
+
 from pathlib import Path
+import glob
+import re
+from typing import Optional, Tuple
+
+import numpy as np
 import pandas as pd
-from .roster import PLAYER_TO_TEAM  # NEW
 
-def _name_variants(name: str) -> list[str]:
-    n = name
-    out = {n}
-    if " Jr." in n or " Jr" in n:
-        out.add(n.replace(" Jr.", " Jr"))
-        out.add(n.replace(" Jr", " Jr."))
-        out.add(n.replace(" Jr.", ""))
-        out.add(n.replace(" Jr", ""))
-    return list(out)
 
-PLAYER_PATTERNS = []
-for name, team in PLAYER_TO_TEAM.items():
-    for variant in _name_variants(name):
-        # word-boundary, case-insensitive
-        PLAYER_PATTERNS.append((name, re.compile(rf"\b{re.escape(variant)}\b", re.I), team))
+# =============================================================================
+# PATHS & CONSTANTS
+# =============================================================================
+RAW_DIR = Path("data/raw/pbp")  # contains <SEASON>/<GAME_ID>.parquet
+MAP_PATH = Path("data/processed/event_possess_map.parquet")
+OUT_CSV = Path("data/processed/possessions_enriched.csv")
+OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
 
-TEAM_WORD_PATTERNS = [
-    ("MIA", re.compile(r"\bheat\b", re.I)),
-    ("BOS", re.compile(r"\bceltics\b", re.I)),
-]
 
-IN_csv  = Path("data/processed/possessions.csv")
-OUT_csv = Path("data/processed/possessions_enriched.csv")
+# =============================================================================
+# HELPERS
+# =============================================================================
+def _norm_game_id(s: pd.Series) -> pd.Series:
+    """Zero-pad and strip non-digits to match 10-char GAME_ID strings."""
+    return s.astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
 
-THREE_PAT = re.compile(r"\b(3pt|3-pt|three)\b", re.I)
-MISS_PAT  = re.compile(r"\bmiss(es|ed)?\b", re.I)
-MADE_PAT  = re.compile(r"\bmade|makes\b", re.I)
 
-# Compile player patterns once (word boundaries; case-insensitive)
-PLAYER_PATTERNS = [(name, re.compile(rf"\b{re.escape(name)}\b", re.I), team)
-                   for name, team in PLAYER_TO_TEAM.items()]
+def _find_game_parquet(game_id: str) -> Optional[str]:
+    """
+    Locate the parquet file for a given GAME_ID across any season dir.
+    Searches: data/raw/pbp/**/<GAME_ID>.parquet
+    """
+    pattern = str(RAW_DIR / "**" / f"{game_id}.parquet")
+    matches = glob.glob(pattern, recursive=True)
+    return matches[0] if matches else None
 
-TEAM_WORD_PATTERNS = [
-    ("MIA", re.compile(r"\bheat\b", re.I)),
-    ("BOS", re.compile(r"\bceltics\b", re.I)),
-]
 
-def infer_team_from_text(start_text: str, end_text: str) -> str | None:
-    s = str(start_text or "")
-    e = str(end_text or "")
+def _parse_score_pair(score: str) -> Tuple[Optional[int], Optional[int]]:
+    """
+    Parse 'XX-YY' to (away, home). NBA API SCORE is 'VISITORS-HOME'.
+    Return (None, None) if unparsable.
+    """
+    if not isinstance(score, str) or "-" not in score:
+        return (None, None)
+    try:
+        a, h = score.split("-")
+        return (int(a), int(h))
+    except Exception:
+        return (None, None)
 
-    # 1) Player hit wins
-    for _name, pat, team in PLAYER_PATTERNS:
-        if pat.search(s) or pat.search(e):
-            return team
 
-    # 2) Explicit team words
-    for code, pat in TEAM_WORD_PATTERNS:
-        if pat.search(s) or pat.search(e):
-            return code
+def _score_total(s: pd.Series) -> pd.Series:
+    """Convert SCORE to total points (away+home)."""
+    ah = s.fillna("").astype(str).str.extract(r"(\d+)-(\d+)")
+    out = pd.to_numeric(ah[0], errors="coerce") + pd.to_numeric(ah[1], errors="coerce")
+    return out
 
+
+def _margin_number(scoremargin: pd.Series) -> pd.Series:
+    """
+    SCOREMARGIN column can be like '3', 'TIE', '', '-5'.
+    Convert to signed integer from the HOME perspective:
+      positive => home leads, negative => home trails.
+    """
+    s = scoremargin.astype(str).str.upper()
+    s = s.replace({"TIE": "0", "": np.nan, "NONE": np.nan})
+    return pd.to_numeric(s, errors="coerce")
+
+
+def _guess_team_from_row(row: pd.Series) -> Optional[str]:
+    """
+    Try to infer the team abbreviation responsible for the event:
+    - Use PLAYER*_TEAM_ABBREVIATION if present.
+    - Else scrape last ALLCAPS token from descriptions (HOME/VISITOR/NEUTRAL).
+    """
+    for c in (
+        "PLAYER1_TEAM_ABBREVIATION",
+        "PLAYER2_TEAM_ABBREVIATION",
+        "PLAYER3_TEAM_ABBREVIATION",
+    ):
+        if c in row and isinstance(row[c], str) and len(row[c]) in (2, 3, 4):
+            return row[c].strip()
+
+    for c in ("HOMEDESCRIPTION", "VISITORDESCRIPTION", "NEUTRALDESCRIPTION"):
+        if c in row and isinstance(row[c], str) and row[c]:
+            m = re.findall(r"\b[A-Z]{2,4}\b", row[c])
+            if m:
+                return m[-1]
     return None
 
-def points_from_end(result: str, end_text: str) -> int:
-    r = (result or "").lower()
-    t = (end_text or "")
 
-    # Field goals
-    if r == "made shot":
-        return 3 if THREE_PAT.search(t) else 2
-    if r == "missed shot":
-        return 0
+# =============================================================================
+# MAIN
+# =============================================================================
+def main():
+    # -------------------------------------------------------------------------
+    # 0) Load (GAME_ID, PERIOD, EVENTNUM) → POSS_SEQ map
+    # -------------------------------------------------------------------------
+    if not MAP_PATH.exists():
+        raise SystemExit(
+            f"Missing {MAP_PATH}. Run: python -m src.features.run_possessions"
+        )
 
-    # Free throws (final ordinary FT)
-    if r == "ft_end":
-        return 0 if MISS_PAT.search(t) else 1
+    emap = pd.read_parquet(MAP_PATH).copy()
+    for c in ["GAME_ID", "EVENTNUM", "POSS_SEQ"]:
+        if c not in emap.columns:
+            raise SystemExit(f"{MAP_PATH} missing required column: {c}")
 
-    # Turnovers / defensive rebound / end period → no points
-    if r in {"turnover", "rebound_def", "end of period"}:
-        return 0
+    emap["GAME_ID"] = _norm_game_id(emap["GAME_ID"])
+    for c in ["EVENTNUM", "POSS_SEQ", "PERIOD"]:
+        if c in emap.columns:
+            emap[c] = pd.to_numeric(emap[c], errors="coerce")
 
-    # Offensive rebound shouldn't be an end row, but be safe
-    if r == "rebound_off":
-        return 0
+    # -------------------------------------------------------------------------
+    # 1) Load raw PBP for each game referenced in the map
+    # -------------------------------------------------------------------------
+    game_ids = sorted(emap["GAME_ID"].unique().tolist())
+    frames: list[pd.DataFrame] = []
+    missing: list[str] = []
 
-    return 0
+    for gid in game_ids:
+        f = _find_game_parquet(gid)
+        if not f:
+            missing.append(gid)
+            continue
 
-def classify_result(result: str, pts: int) -> str:
-    r = (result or "").lower()
-    if r == "turnover":
-        return "turnover"
-    if pts > 0:
-        return "score"
-    return "empty"
+        df = pd.read_parquet(f).copy()
+        df["GAME_ID"] = _norm_game_id(df["GAME_ID"])
 
-def enrich(df: pd.DataFrame) -> pd.DataFrame:
-    out = df.copy()
+        # Required keys
+        for need in ["EVENTNUM", "PERIOD"]:
+            if need not in df.columns:
+                raise SystemExit(f"{f} missing required column: {need}")
+        df["EVENTNUM"] = pd.to_numeric(df["EVENTNUM"], errors="coerce")
+        df["PERIOD"] = pd.to_numeric(df["PERIOD"], errors="coerce")
 
-    # TEAM from start/end text using roster
-    out["TEAM"] = [infer_team_from_text(s, e) for s, e in zip(out.get("START_TEXT",""), out.get("END_TEXT",""))]
+        # Ensure score/margin columns exist
+        if "SCORE" not in df.columns:
+            df["SCORE"] = np.nan
+        if "SCOREMARGIN" not in df.columns:
+            df["SCOREMARGIN"] = np.nan
 
-    # POINTS from ending event
-    out["POINTS"] = [points_from_end(res, txt) for res, txt in zip(out.get("RESULT",""), out.get("END_TEXT",""))]
+        # Precompute helpers
+        df["TOTAL_SCORE"] = _score_total(df["SCORE"])
+        df["MARGIN_NUM"] = _margin_number(df["SCOREMARGIN"])
 
-    # RESULT_CLASS
-    out["RESULT_CLASS"] = [classify_result(res, pts) for res, pts in zip(out.get("RESULT",""), out["POINTS"])]
+        # Keep only needed columns (others are optional and may be missing)
+        keep = [
+            "GAME_ID",
+            "EVENTNUM",
+            "PERIOD",
+            "SCORE",
+            "SCOREMARGIN",
+            "TOTAL_SCORE",
+            "MARGIN_NUM",
+            "HOMEDESCRIPTION",
+            "VISITORDESCRIPTION",
+            "NEUTRALDESCRIPTION",
+            "PLAYER1_TEAM_ABBREVIATION",
+            "PLAYER2_TEAM_ABBREVIATION",
+            "PLAYER3_TEAM_ABBREVIATION",
+        ]
+        have = [c for c in keep if c in df.columns]
+        frames.append(df[have].copy())
 
-    def _flip(team: str | None) -> str | None:
-        if team == "MIA": return "BOS"
-        if team == "BOS": return "MIA"
-        return None
+    if missing:
+        print(
+            f"⚠️ Missing raw PBP parquets for {len(missing)} game(s): {missing[:5]}{'...' if len(missing)>5 else ''}"
+        )
+    if not frames:
+        raise SystemExit("No raw PBP loaded. Aborting.")
 
-    # Second pass: fill TEAM using previous possession’s end-team + result semantics
-    out = out.sort_values(["GAME_ID", "POSS_SEQ"]).reset_index(drop=True)
+    pbp = pd.concat(frames, ignore_index=True)
 
-    # First, infer the end-team (who performed END_TEXT)
-    end_team = [infer_team_from_text("", et) for et in out.get("END_TEXT", "")]
-    out["_END_TEAM"] = end_team
+    # -------------------------------------------------------------------------
+    # 2) Attach POSS_SEQ to each PBP row (inner join on GAME_ID & EVENTNUM)
+    # -------------------------------------------------------------------------
+    pbp = pbp.merge(
+        emap[["GAME_ID", "EVENTNUM", "POSS_SEQ"]].drop_duplicates(),
+        on=["GAME_ID", "EVENTNUM"],
+        how="left",
+        validate="1:1",
+    )
+    pbp = pbp[pbp["POSS_SEQ"].notna()].copy()
+    pbp["POSS_SEQ"] = pd.to_numeric(pbp["POSS_SEQ"], errors="coerce")
 
-    for i in range(1, len(out)):
-        if pd.isna(out.at[i, "TEAM"]) or not out.at[i, "TEAM"]:
-            prev_end_team = out.at[i - 1, "_END_TEAM"]
-            prev_res = str(out.at[i - 1, "RESULT"]).lower()
+    # Sort for within-game diffs
+    pbp = pbp.sort_values(["GAME_ID", "POSS_SEQ", "EVENTNUM"]).reset_index(drop=True)
 
-            if prev_end_team in {"MIA", "BOS"}:
-                if prev_res == "rebound_def":
-                    # defense got the ball ⇒ next possession belongs to them
-                    out.at[i, "TEAM"] = prev_end_team
-                elif prev_res in {"made shot", "ft_end", "turnover"}:
-                    # change of possession ⇒ next possession belongs to the other team
-                    out.at[i, "TEAM"] = _flip(prev_end_team)
+    # -------------------------------------------------------------------------
+    # 3) EVENT-LEVEL SCORING
+    #    3a. Primary: use SCORE deltas when available
+    #    3b. Fallback: infer scoring from text when SCORE is missing/unchanged
+    # -------------------------------------------------------------------------
+    # 3a) SCORE-based delta
+    pbp["TOTAL_SCORE_PREV"] = pbp.groupby("GAME_ID")["TOTAL_SCORE"].shift(1)
+    points_from_score = (pbp["TOTAL_SCORE"] - pbp["TOTAL_SCORE_PREV"]).astype("float64")
 
-    # Clean temp
-    out.drop(columns=["_END_TEAM"], inplace=True, errors="ignore")
+    # 3b) Text-based fallback
+    text_home = pbp["HOMEDESCRIPTION"].fillna("").astype(str)
+    text_away = pbp["VISITORDESCRIPTION"].fillna("").astype(str)
+    text_neut = pbp["NEUTRALDESCRIPTION"].fillna("").astype(str)
+    text_all = (text_home + " " + text_away + " " + text_neut).str.lower()
 
-    # EVENT_COUNT (alias)
-    out["EVENT_COUNT"] = out["EVENTS"].astype(int)
+    # Free throws made → +1 (exclude explicit misses)
+    ft_made = text_all.str.contains(
+        r"\bfree throw\b", regex=True
+    ) & ~text_all.str.contains(r"\bmiss(?:es|ed)?\b", regex=True)
 
-    # EFFICIENCY (PPP)
-    out["EFFICIENCY"] = out["POINTS"].astype(float)
+    # 3PT made → +3 (exclude misses)
+    made_3 = (
+        text_all.str.contains(r"\b(?:3\s?pt|3-?pointer|three)\b", regex=True)
+        & text_all.str.contains(r"\b(?:make|makes|made|hits|hit|good)\b", regex=True)
+        & ~text_all.str.contains(r"\bmiss(?:es|ed)?\b", regex=True)
+    )
 
-    # ---- Margin tracking (HEAT perspective) ----
-    out = out.sort_values(["GAME_ID", "POSS_SEQ"]).reset_index(drop=True)
+    # Generic made shot → +2 (not FT, not 3PT)
+    made_generic = (
+        text_all.str.contains(r"\b(?:make|makes|made|hits|hit|good)\b", regex=True)
+        & ~ft_made
+        & ~made_3
+    )
 
-    def margin_delta_row(team, pts):
-        if pd.isna(team) or int(pts) == 0:
-            return 0
-        return int(pts) if str(team) == "MIA" else -int(pts)
+    fallback_points = (
+        (ft_made.astype(int) * 1)
+        + (made_3.astype(int) * 3)
+        + (made_generic.astype(int) * 2)
+    ).astype("float64")
 
-    out["MARGIN_DELTA"] = [margin_delta_row(t, p) for t, p in zip(out.get("TEAM", ""), out["POINTS"])]
+    # Prefer SCORE-based; fallback only when SCORE delta is NaN or (0 with text points)
+    use_fallback = points_from_score.isna() | (
+        (points_from_score == 0) & (fallback_points > 0)
+    )
+    pbp["POINTS_DELTA"] = points_from_score.where(~use_fallback, fallback_points)
+    pbp["POINTS_DELTA"] = pbp["POINTS_DELTA"].clip(lower=0, upper=4).fillna(0)
 
-    # running margin BEFORE and AFTER each possession
-    out["MARGIN_PRE"] = out.groupby("GAME_ID")["MARGIN_DELTA"].cumsum().shift(fill_value=0)
-    out["MARGIN_POST"] = out["MARGIN_PRE"] + out["MARGIN_DELTA"]
+    # -------------------------------------------------------------------------
+    # 4) POSSESSION-LEVEL AGGREGATES
+    #    - POINTS: sum of event deltas within possession
+    #    - PERIOD: first event's period in the possession
+    #    - MARGIN_PRE/MARGIN_POST: first/last MARGIN_NUM
+    #    - TEAM: guessed from row data
+    # -------------------------------------------------------------------------
+    first = pbp.groupby(["GAME_ID", "POSS_SEQ"]).head(1).copy()
+    last = pbp.groupby(["GAME_ID", "POSS_SEQ"]).tail(1).copy()
 
-    # Column order
-    cols = [
-        "GAME_ID","POSS_SEQ","PERIOD","TEAM",
-        "START_TIME","END_TIME","DURATION_SEC",
-        "EVENT_COUNT","RESULT","RESULT_CLASS","POINTS","EFFICIENCY",
-        "START_TEXT","END_TEXT"
+    poss = pbp.groupby(["GAME_ID", "POSS_SEQ"], as_index=False).agg(
+        POINTS=("POINTS_DELTA", "sum")
+    )
+    poss["POINTS"] = (
+        pd.to_numeric(poss["POINTS"], errors="coerce").fillna(0).astype(int)
+    )
+
+    keep_first = first[
+        [
+            "GAME_ID",
+            "POSS_SEQ",
+            "PERIOD",
+            "MARGIN_NUM",
+            "HOMEDESCRIPTION",
+            "VISITORDESCRIPTION",
+            "NEUTRALDESCRIPTION",
+            "PLAYER1_TEAM_ABBREVIATION",
+            "PLAYER2_TEAM_ABBREVIATION",
+            "PLAYER3_TEAM_ABBREVIATION",
+        ]
+    ].rename(columns={"MARGIN_NUM": "MARGIN_PRE"})
+
+    keep_last = last[["GAME_ID", "POSS_SEQ", "MARGIN_NUM"]].rename(
+        columns={"MARGIN_NUM": "MARGIN_POST"}
+    )
+
+    poss = poss.merge(
+        keep_first, on=["GAME_ID", "POSS_SEQ"], how="left", validate="1:1"
+    )
+    poss = poss.merge(keep_last, on=["GAME_ID", "POSS_SEQ"], how="left", validate="1:1")
+
+    # TEAM guess (offense)
+    poss["TEAM"] = poss.apply(_guess_team_from_row, axis=1)
+
+    # -------------------------------------------------------------------------
+    # 5) RESULT CLASS
+    #    'score' if POINTS>0; else 'turnover' if text signals TO; else 'empty'
+    # -------------------------------------------------------------------------
+    def _turnover_flag(df: pd.DataFrame) -> pd.Series:
+        text = (
+            df["HOMEDESCRIPTION"].fillna("").astype(str)
+            + " "
+            + df["VISITORDESCRIPTION"].fillna("").astype(str)
+            + " "
+            + df["NEUTRALDESCRIPTION"].fillna("").astype(str)
+        ).str.lower()
+        pat = r"\bturnover\b|\bstolen\b|\bsteal\b|\boffensive foul\b|\b3 sec turnover\b|\bviolation\b"
+        return text.str.contains(pat, regex=True)
+
+    pbp["IS_TOV"] = _turnover_flag(pbp)
+    tov = (
+        pbp.groupby(["GAME_ID", "POSS_SEQ"], as_index=False)["IS_TOV"]
+        .any()
+        .rename(columns={"IS_TOV": "HAS_TURNOVER"})
+    )
+    poss = poss.merge(tov, on=["GAME_ID", "POSS_SEQ"], how="left", validate="1:1")
+    poss["HAS_TURNOVER"] = poss["HAS_TURNOVER"].fillna(False)
+
+    def _result_class(row: pd.Series) -> str:
+        if (row.get("POINTS", 0) or 0) > 0:
+            return "score"
+        if bool(row.get("HAS_TURNOVER", False)):
+            return "turnover"
+        return "empty"
+
+    poss["RESULT_CLASS"] = poss.apply(_result_class, axis=1)
+
+    # -------------------------------------------------------------------------
+    # 6) CLEANUP, ORDERING & OUTPUT
+    # -------------------------------------------------------------------------
+    poss["GAME_ID"] = _norm_game_id(poss["GAME_ID"])
+    poss["PERIOD"] = (
+        pd.to_numeric(poss["PERIOD"], errors="coerce").fillna(0).astype(int)
+    )
+    poss["MARGIN_PRE"] = pd.to_numeric(poss["MARGIN_PRE"], errors="coerce")
+    poss["MARGIN_POST"] = pd.to_numeric(poss["MARGIN_POST"], errors="coerce")
+
+    keep_cols = [
+        "GAME_ID",
+        "POSS_SEQ",
+        "PERIOD",
+        "MARGIN_PRE",
+        "MARGIN_POST",
+        "POINTS",
+        "RESULT_CLASS",
+        "TEAM",
     ]
-    cols = [c for c in cols if c in out.columns] + [c for c in out.columns if c not in cols]
-    return out[cols]
+    extra_cols = [c for c in poss.columns if c not in keep_cols]
+    out = poss[keep_cols + extra_cols].copy()
 
+    out.to_csv(OUT_CSV, index=False)
+    print(f"✅ Wrote {OUT_CSV} ({len(out)} rows)")
 
-def main() -> None:
-    if not IN_csv.exists():
-        raise SystemExit(f"Missing {IN_csv}. Run: python -m src.features.run_possessions")
+    # -------------------------------------------------------------------------
+    # 7) QA SUMMARIES
+    # -------------------------------------------------------------------------
+    if "RESULT_CLASS" in out.columns:
+        print(
+            "\nRESULT_CLASS counts:\n",
+            out["RESULT_CLASS"].value_counts().to_frame("count"),
+        )
+    if "TEAM" in out.columns:
+        print(
+            "\nTEAM counts:\n", out["TEAM"].value_counts(dropna=False).to_frame("count")
+        )
 
-    df = pd.read_csv(IN_csv)
-    enr = enrich(df)
-    enr.to_csv(OUT_csv, index=False)
-
-    print(f"✅ Wrote {OUT_csv} ({len(enr)} rows)")
-    print("RESULT_CLASS counts:\n", enr["RESULT_CLASS"].value_counts())
-    if "TEAM" in enr.columns:
-        print("\nTEAM counts:\n", enr["TEAM"].value_counts(dropna=False))
-        print("\nPPP by TEAM:\n", enr.groupby("TEAM")["EFFICIENCY"].mean())
-    print("\nPPP (overall):", round(enr["EFFICIENCY"].mean(), 3))
-
+    # PPP (points per possession)
+    ppp_overall = out["POINTS"].mean()
+    print(f"\nPPP (overall): {ppp_overall:.3f}")
+    if "TEAM" in out.columns:
+        ppp_by_team = (
+            out.groupby("TEAM", dropna=False)["POINTS"]
+            .mean()
+            .sort_values(ascending=False)
+        )
+        print("\nPPP by TEAM:\n", ppp_by_team)
 
 
 if __name__ == "__main__":

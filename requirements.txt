@@ -22,3 +22,10 @@ lightgbm==4.6.0
 scikit-learn==1.7.1
 pandas==2.3.1
 numpy==2.3.2
+
+#python -m src.features.run_possessions
+#python -m src.features.enrich_possessions
+#python -m src.features.build_lineups
+#python -m src.features.build_event_features
+#python -m src.models.train_epv
+#streamlit run src/app/streamlit_app.py

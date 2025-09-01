@@ -9,9 +9,15 @@ DOCS = Path("docs")
 DOCS.mkdir(exist_ok=True)
 
 REQUIRED_COLS = [
-    "GAME_ID","EVENTNUM","PERIOD","PCTIMESTRING",
-    "HOMEDESCRIPTION","VISITORDESCRIPTION","NEUTRALDESCRIPTION"
+    "GAME_ID",
+    "EVENTNUM",
+    "PERIOD",
+    "PCTIMESTRING",
+    "HOMEDESCRIPTION",
+    "VISITORDESCRIPTION",
+    "NEUTRALDESCRIPTION",
 ]
+
 
 def list_pbp_files() -> dict[str, list[Path]]:
     seasons: dict[str, list[Path]] = {}
@@ -24,29 +30,42 @@ def list_pbp_files() -> dict[str, list[Path]]:
                 seasons[season_dir.name] = files
     return seasons
 
+
 def read_pbp(path: Path) -> pd.DataFrame:
     return pd.read_parquet(path)
+
 
 def check_event_order(df: pd.DataFrame) -> bool:
     s = pd.to_numeric(df["EVENTNUM"], errors="coerce")
     return (s.diff().fillna(1) >= 0).all()
 
+
 def missing_required_cols(df: pd.DataFrame) -> list[str]:
     return [c for c in REQUIRED_COLS if c not in df.columns]
 
+
 def null_report(df: pd.DataFrame) -> dict[str, float]:
-    cols = ["PERIOD","PCTIMESTRING","HOMEDESCRIPTION","VISITORDESCRIPTION","NEUTRALDESCRIPTION"]
+    cols = [
+        "PERIOD",
+        "PCTIMESTRING",
+        "HOMEDESCRIPTION",
+        "VISITORDESCRIPTION",
+        "NEUTRALDESCRIPTION",
+    ]
     return {c: float(df[c].isna().mean()) for c in cols if c in df.columns}
 
+
 def dup_count(df: pd.DataFrame) -> int:
-    if not {"GAME_ID","EVENTNUM"}.issubset(df.columns):
+    if not {"GAME_ID", "EVENTNUM"}.issubset(df.columns):
         return -1
-    return int(df.duplicated(subset=["GAME_ID","EVENTNUM"]).sum())
+    return int(df.duplicated(subset=["GAME_ID", "EVENTNUM"]).sum())
+
 
 def write_report(text: str) -> Path:
     out = DOCS / "dqr.md"
     out.write_text(text, encoding="utf-8")
     return out
+
 
 def main() -> None:
     seasons = list_pbp_files()
@@ -55,7 +74,9 @@ def main() -> None:
 
     if not seasons:
         lines.append("No pbp files found. Run the ingest script first.\n")
-        write_report("\n".join(lines)); print("No pbp files found."); return
+        write_report("\n".join(lines))
+        print("No pbp files found.")
+        return
 
     total = 0
     for s, files in seasons.items():
@@ -77,7 +98,7 @@ def main() -> None:
                 lines.append(f"    - EVENTNUM monotonic: {mono}")
                 lines.append(f"    - duplicate (GAME_ID, EVENTNUM): {dups}")
                 if nulls:
-                    pretty = ', '.join(f'{k}={v:.3f}' for k,v in nulls.items())
+                    pretty = ", ".join(f"{k}={v:.3f}" for k, v in nulls.items())
                     lines.append(f"    - null rates: {pretty}")
             except Exception as e:
                 lines.append(f"  - {p.name}: read error: {e}")
@@ -85,6 +106,7 @@ def main() -> None:
     lines.append(f"**Total PBP parquet files:** {total}\n")
     out = write_report("\n".join(lines))
     print(f"✅ Wrote {out}")
+
 
 if __name__ == "__main__":
     main()
