@@ -1,0 +1,192 @@
+GAME_ID,POSS_SEQ,PERIOD,START_EVENTNUM,END_EVENTNUM,START_TIME,END_TIME,START_TEXT,END_TEXT,EVENTS,RESULT,DURATION_SEC
+0042300103,1,1,2,4,12:00,12:00,Start of 1st Period (6:04 PM EST),Jump Ball Adebayo vs. Porzingis: Tip to Herro,2,made shot,0
+0042300103,2,1,7,8,11:37,11:34,MISS Jovic 25' 3PT Jump Shot,Tatum REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,3,1,9,9,11:23,11:23,MISS Brown 24' 3PT Step Back Jump Shot,MISS Brown 24' 3PT Step Back Jump Shot,1,missed shot,0
+0042300103,4,1,10,12,11:19,11:15,White REBOUND (Off:1 Def:0),HEAT Rebound,3,rebound_def,4
+0042300103,5,1,14,15,11:03,11:00,MISS Herro 26' 3PT Jump Shot,Brown REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,6,1,16,17,10:43,10:40,MISS Tatum 6' Driving Finger Roll Layup,Adebayo REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,7,1,18,20,10:29,10:27,MISS Adebayo 3' Driving Layup Tatum BLOCK (1 BLK),Brown REBOUND (Off:0 Def:2),2,rebound_def,2
+0042300103,8,1,21,21,10:14,10:14,Porzingis 25' 3PT Jump Shot (3 PTS) (Brown 1 AST),Porzingis 25' 3PT Jump Shot (3 PTS) (Brown 1 AST),1,made shot,0
+0042300103,9,1,23,23,10:04,10:04,Adebayo 11' Floating Jump Shot (2 PTS),Adebayo 11' Floating Jump Shot (2 PTS),1,made shot,0
+0042300103,10,1,24,27,10:04,9:52,Porzingis S.FOUL (P1.T1) (J.Goble),Jovic BLOCK (1 BLK) MISS Brown 2' Hook Shot,3,missed shot,12
+0042300103,11,1,29,34,9:50,9:35,Brown REBOUND (Off:1 Def:2),Tatum REBOUND (Off:0 Def:2),3,rebound_def,15
+0042300103,12,1,35,35,9:28,9:28,Porzingis 1' Alley Oop Dunk (5 PTS) (Holiday 1 AST),Porzingis 1' Alley Oop Dunk (5 PTS) (Holiday 1 AST),1,made shot,0
+0042300103,13,1,37,37,9:11,9:11,Herro Traveling Turnover (P1.T1),Herro Traveling Turnover (P1.T1),1,turnover,0
+0042300103,14,1,38,38,8:58,8:58,Porzingis 26' 3PT Jump Shot (8 PTS) (Tatum 1 AST),Porzingis 26' 3PT Jump Shot (8 PTS) (Tatum 1 AST),1,made shot,0
+0042300103,15,1,40,40,8:38,8:38,MISS Jovic 7' Driving Floating Jump Shot,MISS Jovic 7' Driving Floating Jump Shot,1,missed shot,0
+0042300103,16,1,42,44,8:34,8:30,White REBOUND (Off:1 Def:1),Jaquez Jr. REBOUND (Off:0 Def:1),3,rebound_def,4
+0042300103,17,1,45,45,8:07,8:07,MISS Jaquez Jr. 10' Turnaround Fadeaway Shot,MISS Jaquez Jr. 10' Turnaround Fadeaway Shot,1,missed shot,0
+0042300103,18,1,46,47,8:05,7:57,Brown REBOUND (Off:1 Def:3),Brown 7' Driving Layup (2 PTS),2,made shot,8
+0042300103,19,1,48,48,7:40,7:40,MISS Jaquez Jr. 3PT Jump Shot,MISS Jaquez Jr. 3PT Jump Shot,1,missed shot,0
+0042300103,20,1,49,51,7:37,7:18,Brown REBOUND (Off:1 Def:4),Herro REBOUND (Off:0 Def:1),3,rebound_def,19
+0042300103,21,1,52,53,7:08,7:06,MISS Jovic 8' Driving Floating Jump Shot,Porzingis REBOUND (Off:0 Def:1),2,rebound_def,2
+0042300103,22,1,54,55,6:56,6:53,MISS Tatum 9' Pullup Jump Shot,HEAT Rebound,2,rebound_def,3
+0042300103,23,1,57,59,6:53,9:49,HEAT Timeout: Regular (Full 1 Short 0),Holiday Step Out of Bounds Turnover (P1.T1),2,turnover,0
+0042300103,24,1,60,65,6:53,6:36,SUB: Pritchard FOR Tatum,Porzingis REBOUND (Off:0 Def:2),4,rebound_def,17
+0042300103,25,1,66,66,6:28,6:28,MISS Porzingis 26' 3PT Jump Shot,MISS Porzingis 26' 3PT Jump Shot,1,missed shot,0
+0042300103,26,1,67,68,6:23,6:23,Pritchard REBOUND (Off:1 Def:0),MISS White 26' 3PT Jump Shot,2,missed shot,0
+0042300103,27,1,69,70,6:21,6:20,Brown REBOUND (Off:2 Def:4),Brown Tip Dunk Shot (4 PTS),2,made shot,1
+0042300103,28,1,71,72,5:56,5:54,MISS Herro 5' Driving Layup,Horford REBOUND (Off:0 Def:1),2,rebound_def,2
+0042300103,29,1,73,78,5:48,5:43,Jaquez Jr. P.FOUL (P1.T1) (J.Williams),HEAT Rebound,4,rebound_def,5
+0042300103,30,1,79,83,5:43,5:31,Porzingis L.B.FOUL (P2.T2) (M.Lindsay),MISS Highsmith 25' 3PT Jump Shot,3,missed shot,12
+0042300103,31,1,84,85,5:26,5:21,Adebayo REBOUND (Off:1 Def:1),MISS Highsmith 26' 3PT Jump Shot,2,missed shot,5
+0042300103,32,1,86,87,5:17,5:13,Adebayo REBOUND (Off:2 Def:1),Jovic 3PT Jump Shot (3 PTS) (Highsmith 1 AST),2,made shot,4
+0042300103,33,1,89,89,4:46,4:46,Brown 14' Pullup Jump Shot (6 PTS),Brown 14' Pullup Jump Shot (6 PTS),1,made shot,0
+0042300103,34,1,90,90,4:35,4:35,Martin Out of Bounds Lost Ball Turnover (P1.T2),Martin Out of Bounds Lost Ball Turnover (P1.T2),1,turnover,0
+0042300103,35,1,91,94,4:35,4:19,SUB: D. Robinson FOR Martin,Jovic REBOUND (Off:0 Def:1),3,rebound_def,16
+0042300103,36,1,95,96,4:12,4:09,MISS Jovic 26' 3PT Jump Shot,Kornet REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,37,1,97,97,3:57,3:57,Pritchard Step Out of Bounds Turnover (P1.T2),Pritchard Step Out of Bounds Turnover (P1.T2),1,turnover,0
+0042300103,38,1,98,98,3:47,3:47,MISS Herro 5' Driving Layup,MISS Herro 5' Driving Layup,1,missed shot,0
+0042300103,39,1,99,100,3:46,3:45,Adebayo REBOUND (Off:3 Def:1),Adebayo Tip Layup Shot (5 PTS),2,made shot,1
+0042300103,40,1,101,101,3:23,3:23,MISS Brown 14' Pullup Jump Shot,MISS Brown 14' Pullup Jump Shot,1,missed shot,0
+0042300103,41,1,102,106,3:21,3:08,Adebayo REBOUND (Off:3 Def:2),HEAT Rebound,4,rebound_def,13
+0042300103,42,1,107,114,3:08,3:08,MISS Adebayo Free Throw 2 of 2,Tatum REBOUND (Off:0 Def:3),2,rebound_def,0
+0042300103,43,1,115,116,2:53,2:52,MISS Horford 24' 3PT Jump Shot,HEAT Rebound,2,rebound_def,1
+0042300103,44,1,118,129,2:52,2:52,Celtics Timeout: Regular (Reg.1 Short 0),Highsmith Bad Pass Turnover (P1.T3) Holiday STEAL (1 STL),7,turnover,0
+0042300103,45,1,130,130,2:44,2:44,Pritchard 26' 3PT Jump Shot (3 PTS) (Tatum 2 AST),Pritchard 26' 3PT Jump Shot (3 PTS) (Tatum 2 AST),1,made shot,0
+0042300103,46,1,134,134,2:20,2:20,Highsmith 5' Driving Layup (2 PTS),Highsmith 5' Driving Layup (2 PTS),1,made shot,0
+0042300103,47,1,135,136,1:59,1:56,MISS Hauser 3PT Jump Shot,Jaquez Jr. REBOUND (Off:0 Def:2),2,rebound_def,3
+0042300103,48,1,137,137,1:56,1:56,Jaquez Jr. Out of Bounds - Bad Pass Turnover Turnover (P1.T4),Jaquez Jr. Out of Bounds - Bad Pass Turnover Turnover (P1.T4),1,turnover,0
+0042300103,49,1,138,138,1:46,1:46,Tatum 16' Turnaround Fadeaway (2 PTS),Tatum 16' Turnaround Fadeaway (2 PTS),1,made shot,0
+0042300103,50,1,139,139,1:22,1:22,Highsmith 7' Floating Jump Shot (4 PTS),Highsmith 7' Floating Jump Shot (4 PTS),1,made shot,0
+0042300103,51,1,140,141,1:07,1:04,MISS Pritchard 27' 3PT Jump Shot,Love REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,52,1,142,142,0:48,0:48,Herro Step Out of Bounds Turnover (P2.T5),Herro Step Out of Bounds Turnover (P2.T5),1,turnover,0
+0042300103,53,1,143,145,0:48,0:39,SUB: Martin FOR Herro,Horford 6' Floating Jump Shot (2 PTS) (Holiday 2 AST),2,made shot,9
+0042300103,54,1,149,151,0:23,0:22,MISS Highsmith 6' Driving Layup Holiday BLOCK (1 BLK),Horford REBOUND (Off:0 Def:2),2,rebound_def,1
+0042300103,55,1,152,155,0:20,0:20,Jaquez Jr. S.FOUL (P2.T2) (J.Goble),Celtics Rebound,3,rebound_def,0
+0042300103,56,1,156,159,0:20,0:18,SUB: Herro FOR Martin,Love REBOUND (Off:0 Def:2),3,rebound_def,2
+0042300103,57,1,160,163,0:03,0:00,Pritchard P.FOUL (P1.T4) (M.Lindsay),HEAT Rebound,3,rebound_def,3
+0042300103,58,1,164,164,0:00,0:00,End of 1st Period (6:30 PM EST),End of 1st Period (6:30 PM EST),1,end of period,0
+0042300103,59,2,167,168,12:00,11:45,Start of 2nd Period (6:34 PM EST),Tatum 26' 3PT Pullup Jump Shot (5 PTS) (Pritchard 1 AST),2,made shot,15
+0042300103,60,2,169,169,11:26,11:26,D. Robinson Out of Bounds Lost Ball Turnover (P1.T6),D. Robinson Out of Bounds Lost Ball Turnover (P1.T6),1,turnover,0
+0042300103,61,2,170,170,11:11,11:11,Hauser 24' 3PT Pullup Jump Shot (3 PTS) (Horford 1 AST),Hauser 24' 3PT Pullup Jump Shot (3 PTS) (Horford 1 AST),1,made shot,0
+0042300103,62,2,172,177,11:08,10:51,HEAT Timeout: Regular (Full 2 Short 0),Tatum REBOUND (Off:0 Def:4),4,rebound_def,17
+0042300103,63,2,178,178,10:33,10:33,Tatum 26' 3PT Jump Shot (8 PTS),Tatum 26' 3PT Jump Shot (8 PTS),1,made shot,0
+0042300103,64,2,179,179,10:12,10:12,Highsmith 4' Driving Layup (6 PTS) (D. Robinson 1 AST),Highsmith 4' Driving Layup (6 PTS) (D. Robinson 1 AST),1,made shot,0
+0042300103,65,2,181,182,10:03,10:00,MISS Horford 24' 3PT Jump Shot,D. Robinson REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,66,2,183,183,9:49,9:49,Adebayo 9' Turnaround Fadeaway (7 PTS) (Highsmith 2 AST),Adebayo 9' Turnaround Fadeaway (7 PTS) (Highsmith 2 AST),1,made shot,0
+0042300103,67,2,184,194,9:26,9:09,Highsmith S.FOUL (P1.T1) (J.Goble),Martin Out of Bounds - Bad Pass Turnover Turnover (P2.T7),6,turnover,17
+0042300103,68,2,195,196,9:26,8:49,SUB: Herro FOR D. Robinson,Pritchard 4' Driving Layup (5 PTS) (Tatum 3 AST),2,made shot,37
+0042300103,69,2,197,197,8:31,8:31,Martin 25' 3PT Jump Shot (3 PTS) (Adebayo 1 AST),Martin 25' 3PT Jump Shot (3 PTS) (Adebayo 1 AST),1,made shot,0
+0042300103,70,2,199,199,8:21,8:21,MISS Hauser 24' 3PT Jump Shot,MISS Hauser 24' 3PT Jump Shot,1,missed shot,0
+0042300103,71,2,200,201,8:18,8:16,Pritchard REBOUND (Off:2 Def:0),Pritchard 4' Putback Layup (7 PTS),2,made shot,2
+0042300103,72,2,202,202,8:02,8:02,Herro 12' Driving Floating Jump Shot (2 PTS),Herro 12' Driving Floating Jump Shot (2 PTS),1,made shot,0
+0042300103,73,2,203,203,7:44,7:44,Tatum 21' Step Back Jump Shot (13 PTS),Tatum 21' Step Back Jump Shot (13 PTS),1,made shot,0
+0042300103,74,2,204,211,7:32,7:10,Hauser S.FOUL (P1.T1) (J.Williams),Hauser 3' Cutting Layup Shot (5 PTS) (Tatum 4 AST),5,made shot,22
+0042300103,75,2,213,224,6:58,6:37,Hauser S.FOUL (P2.T2) (M.Lindsay),HEAT Rebound,8,rebound_def,21
+0042300103,76,2,226,226,6:23,6:23,Herro 27' 3PT Pullup Jump Shot (5 PTS),Herro 27' 3PT Pullup Jump Shot (5 PTS),1,made shot,0
+0042300103,77,2,227,227,6:01,6:01,Jovic STEAL (1 STL) Pritchard Bad Pass Turnover (P2.T3),Jovic STEAL (1 STL) Pritchard Bad Pass Turnover (P2.T3),1,turnover,0
+0042300103,78,2,229,229,5:50,5:50,MISS Herro 27' 3PT Pullup Jump Shot,MISS Herro 27' 3PT Pullup Jump Shot,1,missed shot,0
+0042300103,79,2,230,231,5:49,5:40,Brown REBOUND (Off:2 Def:5),MISS White 25' 3PT Jump Shot,2,missed shot,9
+0042300103,80,2,232,233,5:39,5:38,Porzingis REBOUND (Off:1 Def:2),Porzingis 4' Putback Layup (10 PTS),2,made shot,1
+0042300103,81,2,234,234,5:24,5:24,MISS Adebayo 7' Fadeaway Jumper,MISS Adebayo 7' Fadeaway Jumper,1,missed shot,0
+0042300103,82,2,235,240,5:23,5:02,Highsmith REBOUND (Off:1 Def:0),Herro Out of Bounds - Bad Pass Turnover Turnover (P3.T8),4,turnover,21
+0042300103,83,2,241,245,4:46,4:34,Jovic S.FOUL (P1.T2) (J.Goble),Jovic 5' Driving Layup (5 PTS) (Highsmith 3 AST),4,made shot,12
+0042300103,84,2,248,251,4:34,4:18,Holiday S.FOUL (P1.T4) (J.Goble),White 27' 3PT Jump Shot (3 PTS) (Holiday 3 AST),3,made shot,16
+0042300103,85,2,253,254,3:57,3:56,MISS Herro 5' Driving Layup,Tatum REBOUND (Off:0 Def:5),2,rebound_def,1
+0042300103,86,2,255,255,3:54,3:54,Brown 1' Cutting Layup Shot (8 PTS) (Holiday 4 AST),Brown 1' Cutting Layup Shot (8 PTS) (Holiday 4 AST),1,made shot,0
+0042300103,87,2,257,259,3:54,3:54,Highsmith S.FOUL (P2.T3) (J.Goble),MISS Brown Free Throw 1 of 1,2,free throw,0
+0042300103,88,2,260,261,3:49,3:49,White REBOUND (Off:2 Def:1),White Tip Layup Shot (5 PTS),2,made shot,0
+0042300103,89,2,263,264,3:33,3:32,MISS Adebayo 10' Fadeaway Jumper,Tatum REBOUND (Off:0 Def:6),2,rebound_def,1
+0042300103,90,2,265,266,3:22,3:19,MISS Tatum 26' 3PT Pullup Jump Shot,Jovic REBOUND (Off:0 Def:2),2,rebound_def,3
+0042300103,91,2,268,272,3:02,2:44,Tatum S.FOUL (P1.PN) (J.Goble),Brown 2' Driving Layup (10 PTS) (Holiday 5 AST),4,made shot,18
+0042300103,92,2,274,274,2:23,2:23,Herro 27' 3PT Pullup Jump Shot (10 PTS) (Adebayo 2 AST),Herro 27' 3PT Pullup Jump Shot (10 PTS) (Adebayo 2 AST),1,made shot,0
+0042300103,93,2,276,276,2:09,2:09,White 27' 3PT Pullup Jump Shot (8 PTS) (Brown 2 AST),White 27' 3PT Pullup Jump Shot (8 PTS) (Brown 2 AST),1,made shot,0
+0042300103,94,2,277,277,1:55,1:55,MISS Adebayo 5' Driving Hook Shot,MISS Adebayo 5' Driving Hook Shot,1,missed shot,0
+0042300103,95,2,278,279,1:53,1:41,Porzingis REBOUND (Off:1 Def:3),White 5' Cutting Layup Shot (10 PTS) (Porzingis 1 AST),2,made shot,12
+0042300103,96,2,281,281,1:31,1:31,Highsmith Bad Pass Turnover (P2.T9) Porzingis STEAL (1 STL),Highsmith Bad Pass Turnover (P2.T9) Porzingis STEAL (1 STL),1,turnover,0
+0042300103,97,2,283,283,1:28,1:28,MISS Tatum Running Layup,MISS Tatum Running Layup,1,missed shot,0
+0042300103,98,2,284,285,1:27,1:26,White REBOUND (Off:3 Def:1),White Tip Layup Shot (12 PTS),2,made shot,1
+0042300103,99,2,286,295,1:26,1:10,HEAT Timeout: Regular (Full 3 Short 0),HEAT Rebound,6,rebound_def,16
+0042300103,100,2,296,298,1:10,0:50,Jovic Free Throw 2 of 2 (7 PTS),Jovic REBOUND (Off:0 Def:3),3,rebound_def,20
+0042300103,101,2,299,299,0:31,0:31,Jaquez Jr. 15' Turnaround Fadeaway (4 PTS),Jaquez Jr. 15' Turnaround Fadeaway (4 PTS),1,made shot,0
+0042300103,102,2,300,304,0:14,0:14,Jovic S.FOUL (P2.T4) (M.Lindsay),Celtics Rebound,4,rebound_def,0
+0042300103,103,2,305,308,0:14,0:04,SUB: D. Robinson FOR Jaquez Jr.,MISS Herro 29' 3PT Pullup Jump Shot,3,missed shot,10
+0042300103,104,2,309,311,0:02,0:00,Brown REBOUND (Off:2 Def:6),Celtics Rebound,3,rebound_def,2
+0042300103,105,2,312,312,0:00,0:00,End of 2nd Period (7:03 PM EST),End of 2nd Period (7:03 PM EST),1,end of period,0
+0042300103,106,3,317,319,12:00,11:40,Start of 3rd Period (7:20 PM EST),Celtics Rebound,3,rebound_def,20
+0042300103,107,3,321,321,11:34,11:34,Porzingis 26' 3PT Jump Shot (15 PTS) (Brown 3 AST),Porzingis 26' 3PT Jump Shot (15 PTS) (Brown 3 AST),1,made shot,0
+0042300103,108,3,323,323,11:13,11:13,Jaquez Jr. 6' Driving Layup (6 PTS) (Martin 1 AST),Jaquez Jr. 6' Driving Layup (6 PTS) (Martin 1 AST),1,made shot,0
+0042300103,109,3,324,324,11:03,11:03,Brown 4' Driving Layup (12 PTS),Brown 4' Driving Layup (12 PTS),1,made shot,0
+0042300103,110,3,325,325,10:47,10:47,MISS Jaquez Jr. 25' 3PT Jump Shot Brown BLOCK (1 BLK),MISS Jaquez Jr. 25' 3PT Jump Shot Brown BLOCK (1 BLK),1,missed shot,0
+0042300103,111,3,327,328,10:46,10:39,Martin REBOUND (Off:1 Def:0),Jaquez Jr. 7' Driving Floating Jump Shot (8 PTS) (Martin 2 AST),2,made shot,7
+0042300103,112,3,329,329,10:27,10:27,Brown 2' Cutting Dunk Shot (14 PTS) (Porzingis 2 AST),Brown 2' Cutting Dunk Shot (14 PTS) (Porzingis 2 AST),1,made shot,0
+0042300103,113,3,332,332,10:02,10:02,Jaquez Jr. Lost Ball Turnover (P2.T10) Brown STEAL (1 STL),Jaquez Jr. Lost Ball Turnover (P2.T10) Brown STEAL (1 STL),1,turnover,0
+0042300103,114,3,334,337,9:59,9:41,Herro P.FOUL (P1.T1) (J.Goble),Herro REBOUND (Off:0 Def:2),3,rebound_def,18
+0042300103,115,3,338,338,9:37,9:37,MISS Martin 24' 3PT Running Jump Shot,MISS Martin 24' 3PT Running Jump Shot,1,missed shot,0
+0042300103,116,3,339,340,9:33,9:28,Adebayo REBOUND (Off:4 Def:2),Adebayo 2' Driving Layup (11 PTS),2,made shot,5
+0042300103,117,3,342,342,9:14,9:14,MISS Holiday 27' 3PT Step Back Jump Shot,MISS Holiday 27' 3PT Step Back Jump Shot,1,missed shot,0
+0042300103,118,3,343,344,9:11,8:55,Martin REBOUND (Off:1 Def:1),MISS Jaquez Jr. 2' Driving Reverse Layup Porzingis BLOCK (1 BLK),2,missed shot,16
+0042300103,119,3,346,348,8:53,8:51,Jaquez Jr. REBOUND (Off:1 Def:2),Celtics Rebound,3,rebound_def,2
+0042300103,120,3,350,350,8:29,8:29,MISS Tatum 8' Floating Jump Shot,MISS Tatum 8' Floating Jump Shot,1,missed shot,0
+0042300103,121,3,351,352,8:27,8:20,Martin REBOUND (Off:1 Def:2),Jovic 3PT Jump Shot (10 PTS) (Jaquez Jr. 1 AST),2,made shot,7
+0042300103,122,3,356,359,8:03,8:03,Herro AWAY.FROM.PLAY.FOUL (P2.T2) (J.Williams),Celtics Rebound,3,rebound_def,0
+0042300103,123,3,360,360,7:51,7:51,MISS Brown 26' 3PT Step Back Jump Shot,MISS Brown 26' 3PT Step Back Jump Shot,1,missed shot,0
+0042300103,124,3,361,362,7:47,7:30,Adebayo REBOUND (Off:4 Def:3),MISS Herro 27' 3PT Jump Shot,2,missed shot,17
+0042300103,125,3,363,364,7:28,7:25,Adebayo REBOUND (Off:5 Def:3),MISS Jaquez Jr. 26' 3PT Jump Shot,2,missed shot,3
+0042300103,126,3,365,366,7:22,7:15,White REBOUND (Off:3 Def:2),Brown 5' Driving Floating Jump Shot (16 PTS) (White 1 AST),2,made shot,7
+0042300103,127,3,368,368,6:58,6:58,Herro 26' 3PT Jump Shot (13 PTS) (Jaquez Jr. 2 AST),Herro 26' 3PT Jump Shot (13 PTS) (Jaquez Jr. 2 AST),1,made shot,0
+0042300103,128,3,370,370,6:31,6:31,MISS Tatum 27' 3PT Jump Shot,MISS Tatum 27' 3PT Jump Shot,1,missed shot,0
+0042300103,129,3,371,372,6:28,6:25,Jaquez Jr. REBOUND (Off:1 Def:3),Adebayo 2' Running Dunk (13 PTS) (Jaquez Jr. 3 AST),2,made shot,3
+0042300103,130,3,374,380,6:25,6:03,Celtics Timeout: Regular (Reg.2 Short 0),Jovic REBOUND (Off:0 Def:4),5,rebound_def,22
+0042300103,131,3,381,382,5:43,5:43,MISS Adebayo 8' Turnaround Fadeaway Shot,Celtics Rebound,2,rebound_def,0
+0042300103,132,3,384,384,5:35,5:35,Brown 5' Hook Shot (18 PTS) (White 2 AST),Brown 5' Hook Shot (18 PTS) (White 2 AST),1,made shot,0
+0042300103,133,3,386,386,5:12,5:12,MISS Adebayo 3' Hook Shot,MISS Adebayo 3' Hook Shot,1,missed shot,0
+0042300103,134,3,387,390,5:10,4:54,Porzingis REBOUND (Off:1 Def:4),Jump Ball Jaquez Jr. vs. Porzingis: Tip to Jovic,3,made shot,16
+0042300103,135,3,393,393,4:54,4:54,HEAT Rebound,HEAT Rebound,1,rebound_def,0
+0042300103,136,3,394,394,4:47,4:47,Herro 8' Running Jump Shot (15 PTS),Herro 8' Running Jump Shot (15 PTS),1,made shot,0
+0042300103,137,3,395,395,4:25,4:25,White 4' Driving Layup (14 PTS),White 4' Driving Layup (14 PTS),1,made shot,0
+0042300103,138,3,396,396,4:03,4:03,Adebayo 10' Floating Jump Shot (15 PTS) (Herro 1 AST),Adebayo 10' Floating Jump Shot (15 PTS) (Herro 1 AST),1,made shot,0
+0042300103,139,3,398,398,3:46,3:46,White 21' Pullup Jump Shot (16 PTS),White 21' Pullup Jump Shot (16 PTS),1,made shot,0
+0042300103,140,3,399,401,3:35,3:34,MISS Herro 6' Driving Layup Porzingis BLOCK (2 BLK),Horford REBOUND (Off:0 Def:3),2,rebound_def,1
+0042300103,141,3,402,411,3:27,3:16,Adebayo P.FOUL (P1.T3) (M.Lindsay),Horford 2' Alley Oop Dunk (4 PTS) (White 3 AST),5,made shot,11
+0042300103,142,3,413,414,2:54,2:52,MISS Herro 6' Driving Finger Roll Layup,Horford REBOUND (Off:0 Def:4),2,rebound_def,2
+0042300103,143,3,415,416,2:47,2:43,MISS White 26' 3PT Jump Shot,Jovic REBOUND (Off:0 Def:5),2,rebound_def,4
+0042300103,144,3,417,417,2:35,2:35,Herro Out of Bounds - Bad Pass Turnover Turnover (P4.T11),Herro Out of Bounds - Bad Pass Turnover Turnover (P4.T11),1,turnover,0
+0042300103,145,3,418,423,2:35,2:14,HEAT Timeout: Regular (Full 4 Short 0),Horford 25' 3PT Jump Shot (7 PTS) (Holiday 6 AST),4,made shot,21
+0042300103,146,3,425,425,1:45,1:45,Jovic 5' Driving Layup (12 PTS) (Herro 2 AST),Jovic 5' Driving Layup (12 PTS) (Herro 2 AST),1,made shot,0
+0042300103,147,3,426,426,1:33,1:33,Holiday 25' 3PT Jump Shot (3 PTS) (Tatum 5 AST),Holiday 25' 3PT Jump Shot (3 PTS) (Tatum 5 AST),1,made shot,0
+0042300103,148,3,428,428,1:08,1:08,Highsmith 1' Cutting Layup Shot (8 PTS) (Jovic 1 AST),Highsmith 1' Cutting Layup Shot (8 PTS) (Jovic 1 AST),1,made shot,0
+0042300103,149,3,430,431,0:49,0:47,MISS Horford 26' 3PT Jump Shot,Jovic REBOUND (Off:0 Def:6),2,rebound_def,2
+0042300103,150,3,432,433,0:39,0:36,MISS Jovic 15' Pullup Jump Shot,Holiday REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,151,3,434,435,0:31,0:28,MISS Holiday 24' 3PT Step Back Jump Shot,Bryant REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,152,3,436,446,0:10,0:01,Hauser P.FOUL (P3.T1) (J.Goble),HEAT Rebound,7,rebound_def,9
+0042300103,153,3,447,447,0:00,0:00,End of 3rd Period (7:44 PM EST),End of 3rd Period (7:44 PM EST),1,end of period,0
+0042300103,154,4,452,454,12:00,11:38,Start of 4th Period (7:48 PM EST),Tatum REBOUND (Off:0 Def:7),3,rebound_def,22
+0042300103,155,4,455,456,11:27,11:25,MISS Holiday 12' Turnaround Fadeaway Shot,Jovic REBOUND (Off:0 Def:7),2,rebound_def,2
+0042300103,156,4,457,458,11:16,11:13,MISS Jaquez Jr. 15' Turnaround Fadeaway Shot,Holiday REBOUND (Off:0 Def:2),2,rebound_def,3
+0042300103,157,4,459,459,11:10,11:10,Mills STEAL (1 STL) Holiday Bad Pass Turnover (P2.T4),Mills STEAL (1 STL) Holiday Bad Pass Turnover (P2.T4),1,turnover,0
+0042300103,158,4,461,461,11:01,11:01,MISS Jovic 13' Driving Floating Jump Shot Holiday BLOCK (2 BLK),MISS Jovic 13' Driving Floating Jump Shot Holiday BLOCK (2 BLK),1,missed shot,0
+0042300103,159,4,463,464,10:58,10:44,Pritchard REBOUND (Off:2 Def:1),MISS Tatum 26' 3PT Jump Shot,2,missed shot,14
+0042300103,160,4,465,470,10:41,10:22,Horford REBOUND (Off:1 Def:4),Mills 24' 3PT Jump Shot (3 PTS) (Jaquez Jr. 4 AST),5,made shot,19
+0042300103,161,4,472,474,9:58,9:52,Mills P.FOUL (P1.T2) (M.Lindsay),MISS Holiday 5' Driving Layup,2,missed shot,6
+0042300103,162,4,475,476,9:50,9:50,Horford REBOUND (Off:2 Def:4),Horford 2' Putback Layup (9 PTS),2,made shot,0
+0042300103,163,4,477,478,9:22,9:20,MISS Adebayo 11' Pullup Jump Shot,Tatum REBOUND (Off:0 Def:8),2,rebound_def,2
+0042300103,164,4,479,480,9:00,8:58,MISS Hauser 24' 3PT Jump Shot,Jovic REBOUND (Off:0 Def:8),2,rebound_def,2
+0042300103,165,4,481,489,8:50,8:27,Hauser P.FOUL (P4.T1) (M.Lindsay),Tatum 16' Turnaround Fadeaway (20 PTS),4,made shot,23
+0042300103,166,4,490,490,8:17,8:17,Mills 27' 3PT Pullup Jump Shot (6 PTS) (Adebayo 3 AST),Mills 27' 3PT Pullup Jump Shot (6 PTS) (Adebayo 3 AST),1,made shot,0
+0042300103,167,4,492,497,8:17,7:56,Pritchard S.FOUL (P3.T2) (J.Goble),Brown 6' Driving Finger Roll Layup (20 PTS) (Tatum 6 AST),4,made shot,21
+0042300103,168,4,499,500,7:39,7:37,MISS Adebayo 6' Driving Hook Shot,Tatum REBOUND (Off:0 Def:9),2,rebound_def,2
+0042300103,169,4,501,501,7:15,7:15,Tatum 21' Fadeaway Jumper (22 PTS),Tatum 21' Fadeaway Jumper (22 PTS),1,made shot,0
+0042300103,170,4,502,502,6:59,6:59,Adebayo 2' Dunk (17 PTS) (Jaquez Jr. 5 AST),Adebayo 2' Dunk (17 PTS) (Jaquez Jr. 5 AST),1,made shot,0
+0042300103,171,4,504,507,6:59,8:42,Porzingis S.FOUL (P3.T3) (J.Williams),Jaquez Jr. Bad Pass Turnover (P3.T12) Brown STEAL (2 STL),3,turnover,0
+0042300103,172,4,509,512,6:59,6:34,SUB: White FOR Holiday,MISS Tatum 20' Turnaround Fadeaway Shot,3,missed shot,25
+0042300103,173,4,513,514,6:32,6:20,Jaquez Jr. REBOUND (Off:1 Def:4),Adebayo 4' Turnaround Hook Shot (20 PTS) (Mills 1 AST),2,made shot,12
+0042300103,174,4,516,516,5:50,5:50,MISS White 27' 3PT Jump Shot,MISS White 27' 3PT Jump Shot,1,missed shot,0
+0042300103,175,4,517,518,5:43,5:38,Highsmith REBOUND (Off:1 Def:1),Martin 18' Running Pull-Up Jump Shot (5 PTS) (Highsmith 4 AST),2,made shot,5
+0042300103,176,4,520,526,5:17,4:59,Highsmith S.FOUL (P3.T3) (J.Williams),Jaquez Jr. 15' Turnaround Fadeaway (10 PTS),5,made shot,18
+0042300103,177,4,527,530,4:38,4:38,Adebayo S.FOUL (P2.T4) (J.Goble),Celtics Rebound,3,rebound_def,0
+0042300103,178,4,531,532,4:38,4:22,Porzingis Free Throw 2 of 2 (18 PTS),Jaquez Jr. 8' Pullup Jump Shot (12 PTS) (Highsmith 5 AST),2,made shot,16
+0042300103,179,4,533,533,3:57,3:57,Brown 14' Fadeaway Jumper (22 PTS),Brown 14' Fadeaway Jumper (22 PTS),1,made shot,0
+0042300103,180,4,534,535,3:43,3:42,MISS Jaquez Jr. 7' Driving Floating Jump Shot,Tatum REBOUND (Off:0 Def:10),2,rebound_def,1
+0042300103,181,4,536,540,3:42,3:21,Celtics Timeout: Regular (Reg.3 Short 0),MISS Tatum 27' 3PT Pullup Jump Shot,3,missed shot,21
+0042300103,182,4,541,545,3:16,2:49,Adebayo REBOUND (Off:5 Def:4),Tatum REBOUND (Off:0 Def:11),4,rebound_def,27
+0042300103,183,4,546,548,2:29,2:29,Brown OFF.Foul (P2) (J.Williams),Brown Offensive Foul Turnover (P1.T5),2,turnover,0
+0042300103,184,4,549,561,2:29,2:18,SUB: Jovic FOR Jaquez Jr.,MISS Mills 7' Fadeaway Jumper,7,missed shot,11
+0042300103,185,4,562,563,2:16,2:13,Bryant REBOUND (Off:1 Def:1),Bryant 9' Floating Jump Shot (2 PTS),2,made shot,3
+0042300103,186,4,564,564,1:45,1:45,MISS White 17' Step Back Jump Shot,MISS White 17' Step Back Jump Shot,1,missed shot,0
+0042300103,187,4,565,566,1:42,1:33,Highsmith REBOUND (Off:1 Def:2),Jovic 26' 3PT Jump Shot (15 PTS) (O. Robinson 1 AST),2,made shot,9
+0042300103,188,4,568,577,1:21,1:01,Bryant P.FOUL (P1.PN) (J.Williams),Brissett REBOUND (Off:0 Def:1),7,rebound_def,20
+0042300103,189,4,578,579,0:48,0:45,MISS Hauser 28' 3PT Jump Shot,O. Robinson REBOUND (Off:0 Def:1),2,rebound_def,3
+0042300103,190,4,580,581,0:28,0:24,MISS Mills 27' 3PT Jump Shot,Mykhailiuk REBOUND (Off:0 Def:1),2,rebound_def,4
+0042300103,191,4,582,583,0:18,0:00,Celtics Turnover: 8 Second Violation (T#6),End of 4th Period (8:15 PM EST),2,end of period,18

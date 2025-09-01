@@ -9,9 +9,15 @@ END_EVENTS = {"made shot", "turnover", "end of period", "rebound_def", "ft_end"}
 
 # Raw PBP columns we require
 REQUIRED = {
-    "GAME_ID", "EVENTNUM", "PERIOD", "PCTIMESTRING",
-    "HOMEDESCRIPTION", "VISITORDESCRIPTION", "NEUTRALDESCRIPTION",
+    "GAME_ID",
+    "EVENTNUM",
+    "PERIOD",
+    "PCTIMESTRING",
+    "HOMEDESCRIPTION",
+    "VISITORDESCRIPTION",
+    "NEUTRALDESCRIPTION",
 }
+
 
 def _clock_to_seconds(t: str) -> int:
     """'MM:SS' → total seconds; -1 on parse failure."""
@@ -21,12 +27,26 @@ def _clock_to_seconds(t: str) -> int:
     except Exception:
         return -1
 
+
 def normalize_event_type(text: str) -> str:
     t = str(text or "").lower()
 
     SHOT_KWS = (
-        "jump shot", "layup", "dunk", "hook", "tip", "fadeaway", "turnaround",
-        "bank shot", "pull-up", "floater", "alley-oop", "putback", "three", "3pt", "3-pt"
+        "jump shot",
+        "layup",
+        "dunk",
+        "hook",
+        "tip",
+        "fadeaway",
+        "turnaround",
+        "bank shot",
+        "pull-up",
+        "floater",
+        "alley-oop",
+        "putback",
+        "three",
+        "3pt",
+        "3-pt",
     )
 
     # 1) Timeouts & subs (diagnostic only; do NOT end possessions)
@@ -57,8 +77,10 @@ def normalize_event_type(text: str) -> str:
     if ("end" in t and ("period" in t or "q" in t)) or "end of period" in t:
         return "end of period"
 
-    if "turnover" in t:  return "turnover"
-    if "free throw" in t: return "free throw"
+    if "turnover" in t:
+        return "turnover"
+    if "free throw" in t:
+        return "free throw"
 
     # Shots (field goals, not free throws)
     if "free throw" not in t and any(kw in t for kw in SHOT_KWS):
@@ -84,8 +106,10 @@ def normalize_event_type(text: str) -> str:
     # Rebounds
     if "rebound" in t:
         # explicit words
-        if "offensive rebound" in t: return "rebound_off"
-        if "defensive rebound" in t: return "rebound_def"
+        if "offensive rebound" in t:
+            return "rebound_off"
+        if "defensive rebound" in t:
+            return "rebound_def"
         # pattern Off:x Def:y
         if "off:" in t:
             # crude parse: look for a nonzero after 'off:'
@@ -107,6 +131,7 @@ def normalize_event_type(text: str) -> str:
         return "rebound_def"
 
     return "other"
+
 
 def build_possessions(pbp: pd.DataFrame) -> pd.DataFrame:
     # Guard against passing processed data back into the builder

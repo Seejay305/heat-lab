@@ -17,7 +17,6 @@ PLAYER_TO_TEAM = {
     "Rozier": "MIA",
     "Lowry": "MIA",
     "Robinson": "MIA",
-
     # --- BOSTON CELTICS ---
     "Tatum": "BOS",
     "Brown": "BOS",

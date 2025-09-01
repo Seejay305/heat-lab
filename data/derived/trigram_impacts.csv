@@ -1,0 +1,48 @@
+TRIGRAM,n,mean_delta,mean_abs
+missed shot → rebound_off → foul_personal,1,-0.31330962029300125,0.31330962029300125
+foul_shooting → free throw → substitution,1,-0.11309223947032021,0.11309223947032021
+foul_shooting → timeout → turnover,1,-0.10869427441883506,0.10869427441883506
+START → foul_shooting → timeout,1,-0.10559590438391275,0.10559590438391275
+START → foul_personal → turnover,1,-0.09947324025091253,0.09947324025091253
+substitution → substitution → free throw,1,0.09347965996060903,0.09347965996060903
+free throw → substitution → free throw,1,0.09243719215341994,0.09243719215341994
+foul_personal → free throw → substitution,1,-0.08312133123913146,0.08312133123913146
+rebound_off → foul_personal → missed shot,1,-0.07681753267526048,0.07681753267526048
+substitution → free throw → missed shot,2,-0.07549737447945742,0.07549737447945742
+missed shot → rebound_off → made shot,5,0.0727370421258465,0.0727370421258465
+foul_shooting → free throw → rebound_def,1,-0.06855042804423683,0.06855042804423683
+substitution → substitution → made shot,1,0.06232335944075884,0.06232335944075884
+START → foul_shooting → substitution,1,-0.05931718555290555,0.05931718555290555
+substitution → substitution → missed shot,1,-0.047273668259599,0.047273668259599
+free throw → missed shot → rebound_off,1,-0.04068740297335949,0.04068740297335949
+foul_shooting → substitution → free throw,1,0.03284542545045488,0.03284542545045488
+START → foul_personal → missed shot,1,-0.02565551185000725,0.02565551185000725
+START → substitution → free throw,1,0.022938089701448394,0.022938089701448394
+START → missed shot → rebound_off,2,-0.019364099967870585,0.019364099967870585
+substitution → missed shot → rebound_off,2,-0.017134499883821208,0.017134499883821208
+foul_personal → substitution → substitution,1,-0.01534959359894783,0.01534959359894783
+START → missed shot → rebound_def,6,-0.012686854718525395,0.01375294364130906
+foul_personal → missed shot → rebound_off,1,0.012277726665780087,0.012277726665780087
+free throw → free throw → made shot,1,-0.011036210124231394,0.011036210124231394
+substitution → free throw → made shot,2,0.003716566649672126,0.01078373873646643
+START → timeout → substitution,1,0.008457067606282731,0.008457067606282731
+START → substitution → substitution,1,0.007626226796477953,0.007626226796477953
+free throw → missed shot → rebound_def,1,0.007569553138343843,0.007569553138343843
+foul_personal → missed shot → rebound_def,1,0.005978528327060362,0.005978528327060362
+substitution → substitution → substitution,4,0.0018193644313584945,0.00305323990633094
+START → foul_shooting → free throw,2,0.002343311069979981,0.002343311069979981
+START → foul_personal → free throw,1,0.0023077384239944543,0.0023077384239944543
+START → free throw → made shot,1,0.0014459904829764447,0.0014459904829764447
+START → foul_personal → substitution,1,-0.0012667982531469058,0.0012667982531469058
+free throw → substitution → substitution,1,-0.0010505818242194653,0.0010505818242194653
+START → violation → end of period,1,-0.0004739538586626679,0.0004739538586626679
+START → MID → substitution,2,0.0,0.0
+START → MID → timeout,1,0.0,0.0
+START → MID → violation,1,0.0,0.0
+START → MID → foul_personal,4,0.0,0.0
+START → MID → foul_shooting,4,0.0,0.0
+START → MID → free throw,1,0.0,0.0
+START → MID → made shot,4,0.0,0.0
+START → MID → missed shot,8,0.0,0.0
+foul_shooting → free throw → free throw,1,0.0,0.0
+timeout → substitution → missed shot,1,0.0,0.0

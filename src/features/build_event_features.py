@@ -1,6 +1,5 @@
 # src/features/build_event_features.py
 from __future__ import annotations
-import re
 from pathlib import Path
 import pandas as pd
 from src.features.possession_builder import normalize_event_type  # reuse classifier
@@ -11,6 +10,7 @@ LINEUP_PATH = Path("data/derived/lineups_events.parquet")
 ENRICHED_PATH = Path("data/processed/possessions_enriched.csv")
 OUT = Path("data/derived/event_features.parquet")
 OUT.parent.mkdir(parents=True, exist_ok=True)
+
 
 def coalesce_exact_duplicate_names(df: pd.DataFrame) -> pd.DataFrame:
     cols = list(df.columns)
@@ -47,6 +47,7 @@ def coalesce_exact_duplicate_names(df: pd.DataFrame) -> pd.DataFrame:
     assert df.columns.is_unique, "Columns still not unique after coalescing."
     return df
 
+
 def _clock_to_seconds(t: str) -> int:
     try:
         m, s = str(t).split(":")
@@ -54,19 +55,24 @@ def _clock_to_seconds(t: str) -> int:
     except Exception:
         return -1
 
+
 def _unify_text(df: pd.DataFrame) -> pd.Series:
-    cols = ["HOMEDESCRIPTION","VISITORDESCRIPTION","NEUTRALDESCRIPTION"]
+    cols = ["HOMEDESCRIPTION", "VISITORDESCRIPTION", "NEUTRALDESCRIPTION"]
     return df[cols].fillna("").agg(" ".join, axis=1).str.strip()
+
 
 def _attach_possession_seq(pbp: pd.DataFrame) -> pd.DataFrame:
     df = pbp.copy()
     df["EVENTNUM"] = pd.to_numeric(df["EVENTNUM"], errors="coerce")
-    df = df.sort_values(["GAME_ID","PERIOD","EVENTNUM"]).reset_index(drop=True)
+    df = df.sort_values(["GAME_ID", "PERIOD", "EVENTNUM"]).reset_index(drop=True)
     df["TEXT"] = _unify_text(df)
     df["EVTYPE"] = df["TEXT"].map(normalize_event_type)
 
-    START_EVENTS = {"jump ball", "start of period"}  # offensive rebounds DO NOT start new poss
-    END_EVENTS   = {"made shot", "turnover", "end of period", "rebound_def"}
+    START_EVENTS = {
+        "jump ball",
+        "start of period",
+    }  # offensive rebounds DO NOT start new poss
+    END_EVENTS = {"made shot", "turnover", "end of period", "rebound_def"}
 
     prev_end = df["EVTYPE"].shift(1).isin(END_EVENTS).fillna(False)
     new_pos = (df["EVTYPE"].isin(START_EVENTS) | prev_end).astype(int)
@@ -80,31 +86,47 @@ def build_features():
     if not files:
         raise SystemExit("No raw PBP parquet in data/raw/pbp/2023-24")
     pbp = pd.read_parquet(files[0]).copy()
-    pbp = pbp.sort_values(["GAME_ID","PERIOD","EVENTNUM"]).reset_index(drop=True)
+    pbp = pbp.sort_values(["GAME_ID", "PERIOD", "EVENTNUM"]).reset_index(drop=True)
 
     # ---- attach POSS_SEQ to pbp events first
     pbp = _attach_possession_seq(pbp)
 
     # ---- clocks / bins
     pbp["CLOCK_SEC"] = pbp["PCTIMESTRING"].map(_clock_to_seconds)
-    pbp["CLOCK_BIN"] = (pbp["CLOCK_SEC"] // 180)  # 3-min bins
+    pbp["CLOCK_BIN"] = pbp["CLOCK_SEC"] // 180  # 3-min bins
 
     # ---- load enriched possessions
     if not ENRICHED_PATH.exists():
         raise SystemExit("Missing possessions_enriched.csv. Run enrich first.")
     poss = pd.read_csv(ENRICHED_PATH)
-    pbp["GAME_ID"] = pbp["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
-    poss["GAME_ID"] = poss["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    pbp["GAME_ID"] = (
+        pbp["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    )
+    poss["GAME_ID"] = (
+        poss["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    )
 
     # ---- single merge with all needed columns
-    keep = ["GAME_ID", "POSS_SEQ", "MARGIN_PRE", "MARGIN_POST", "POINTS", "RESULT_CLASS", "PERIOD"]
+    keep = [
+        "GAME_ID",
+        "POSS_SEQ",
+        "MARGIN_PRE",
+        "MARGIN_POST",
+        "POINTS",
+        "RESULT_CLASS",
+        "PERIOD",
+    ]
     keep = [c for c in keep if c in poss.columns]
     pbp = pbp.merge(poss[keep], on=["GAME_ID", "POSS_SEQ"], how="left", validate="m:1")
     pbp = pbp.rename(columns={"POINTS": "TARGET_POINTS_AHEAD"})
 
     # normalize GAME_IDs to 10-digit strings on BOTH sides
-    pbp["GAME_ID"] = pbp["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
-    poss["GAME_ID"] = poss["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    pbp["GAME_ID"] = (
+        pbp["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    )
+    poss["GAME_ID"] = (
+        poss["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    )
 
     # ---- cast keys to str and assert keys
     for df in (pbp, poss):
@@ -114,8 +136,10 @@ def build_features():
 
     # ---- merge margin + target points ON two keys
     pbp = pbp.merge(
-        poss[["GAME_ID","POSS_SEQ","MARGIN_PRE","MARGIN_POST","POINTS"]],
-        on=["GAME_ID","POSS_SEQ"], how="left", validate="m:1"
+        poss[["GAME_ID", "POSS_SEQ", "MARGIN_PRE", "MARGIN_POST", "POINTS"]],
+        on=["GAME_ID", "POSS_SEQ"],
+        how="left",
+        validate="m:1",
     ).rename(columns={"POINTS": "TARGET_POINTS_AHEAD"})
 
     # ---- optional lineups join (robust to missing PERIOD/POSS_SEQ) ----
@@ -123,7 +147,10 @@ def build_features():
         lineup = pd.read_parquet(LINEUP_PATH).copy()
         # normalize types
         lineup["GAME_ID"] = (
-            lineup["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+            lineup["GAME_ID"]
+            .astype(str)
+            .str.replace(r"\D", "", regex=True)
+            .str.zfill(10)
         )
         lineup["EVENTNUM"] = pd.to_numeric(lineup.get("EVENTNUM"), errors="coerce")
 
@@ -135,7 +162,9 @@ def build_features():
             ["GAME_ID", "EVENTNUM"],
         ]
         for keys in candidates:
-            if all(k in pbp.columns for k in keys) and all(k in lineup.columns for k in keys):
+            if all(k in pbp.columns for k in keys) and all(
+                k in lineup.columns for k in keys
+            ):
                 merge_keys = keys
                 break
         else:
@@ -153,23 +182,43 @@ def build_features():
 
     # ---- n-grams within a possession
     # EVTYPE already set in _attach_possession_seq
-    pbp["BIGRAM"] = pbp.groupby(["GAME_ID","POSS_SEQ"])["EVTYPE"].shift(1).fillna("START") + " → " + pbp["EVTYPE"]
+    pbp["BIGRAM"] = (
+        pbp.groupby(["GAME_ID", "POSS_SEQ"])["EVTYPE"].shift(1).fillna("START")
+        + " → "
+        + pbp["EVTYPE"]
+    )
     pbp["TRIGRAM"] = (
-        pbp.groupby(["GAME_ID","POSS_SEQ"])["EVTYPE"].shift(2).fillna("START") + " → " +
-        pbp.groupby(["GAME_ID","POSS_SEQ"])["EVTYPE"].shift(1).fillna("MID")   + " → " +
-        pbp["EVTYPE"]
+        pbp.groupby(["GAME_ID", "POSS_SEQ"])["EVTYPE"].shift(2).fillna("START")
+        + " → "
+        + pbp.groupby(["GAME_ID", "POSS_SEQ"])["EVTYPE"].shift(1).fillna("MID")
+        + " → "
+        + pbp["EVTYPE"]
     )
 
     # --- 1) Normalize GAME_ID and join possessions for margin (if not already) ---
-    pbp["GAME_ID"] = pbp["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    pbp["GAME_ID"] = (
+        pbp["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+    )
 
     # If you haven’t already merged margins, pull from enriched possessions
     try:
         poss = pd.read_csv("data/processed/possessions_enriched.csv")
-        poss["GAME_ID"] = poss["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
-        keep = ["GAME_ID", "POSS_SEQ", "MARGIN_PRE", "MARGIN_POST", "POINTS", "RESULT_CLASS", "PERIOD"]
+        poss["GAME_ID"] = (
+            poss["GAME_ID"].astype(str).str.replace(r"\D", "", regex=True).str.zfill(10)
+        )
+        keep = [
+            "GAME_ID",
+            "POSS_SEQ",
+            "MARGIN_PRE",
+            "MARGIN_POST",
+            "POINTS",
+            "RESULT_CLASS",
+            "PERIOD",
+        ]
         keep = [c for c in keep if c in poss.columns]
-        pbp = pbp.merge(poss[keep], on=["GAME_ID", "POSS_SEQ"], how="left", validate="m:1")
+        pbp = pbp.merge(
+            poss[keep], on=["GAME_ID", "POSS_SEQ"], how="left", validate="m:1"
+        )
         pbp = pbp.rename(columns={"POINTS": "TARGET_POINTS_AHEAD"})
 
     except Exception:
@@ -199,7 +248,12 @@ def build_features():
     def is_team_foul(text: str) -> bool:
         t = (text or "").lower()
         # count personal/shooting fouls; exclude 'offensive' / 'loose ball' if you want to be strict
-        if "p.foul" in t or "s.foul" in t or "shooting foul" in t or "personal foul" in t:
+        if (
+            "p.foul" in t
+            or "s.foul" in t
+            or "shooting foul" in t
+            or "personal foul" in t
+        ):
             # rough exclusion for player-control (offensive) fouls:
             if "off" in t or "charge" in t or "player control" in t:
                 return False
@@ -236,7 +290,9 @@ def build_features():
     if "MARGIN_PRE" in pbp.columns:
         bins = [-50, -20, -10, -5, -2, -1, 0, 1, 2, 5, 10, 20, 50]
         labels = list(range(len(bins) - 1))
-        pbp["MARGIN_BIN"] = pd.cut(pbp["MARGIN_PRE"].fillna(0), bins=bins, labels=labels, include_lowest=True)
+        pbp["MARGIN_BIN"] = pd.cut(
+            pbp["MARGIN_PRE"].fillna(0), bins=bins, labels=labels, include_lowest=True
+        )
         pbp["MARGIN_BIN"] = pbp["MARGIN_BIN"].astype("Int64").fillna(-1).astype(int)
     else:
         pbp["MARGIN_BIN"] = -1
@@ -259,16 +315,31 @@ def build_features():
     # --- keep writing your existing columns PLUS the new ones ---
     # Example: if you build a final df 'out_df' to write, add these to it:
     extra_cols = [
-        "OFF_SIDE", "HOME_BONUS", "AWAY_BONUS", "OFF_BONUS",
-        "MARGIN_BIN", "EVENT_IDX", "RCNT3_MAKE", "RCNT3_MISS", "RCNT3_TO"
+        "OFF_SIDE",
+        "HOME_BONUS",
+        "AWAY_BONUS",
+        "OFF_BONUS",
+        "MARGIN_BIN",
+        "EVENT_IDX",
+        "RCNT3_MAKE",
+        "RCNT3_MISS",
+        "RCNT3_TO",
     ]
     for c in extra_cols:
         if c not in pbp.columns:
             pbp[c] = 0
 
     # ensure types
-    for c in ["HOME_BONUS", "AWAY_BONUS", "OFF_BONUS", "MARGIN_BIN", "EVENT_IDX",
-              "RCNT3_MAKE", "RCNT3_MISS", "RCNT3_TO"]:
+    for c in [
+        "HOME_BONUS",
+        "AWAY_BONUS",
+        "OFF_BONUS",
+        "MARGIN_BIN",
+        "EVENT_IDX",
+        "RCNT3_MAKE",
+        "RCNT3_MISS",
+        "RCNT3_TO",
+    ]:
         pbp[c] = pd.to_numeric(pbp[c], errors="coerce").fillna(0).astype(int)
 
     # and then proceed to save:
@@ -278,8 +349,14 @@ def build_features():
     print("pbp rows:", len(pbp))
     print("cols:", sorted(pbp.columns.tolist())[:12], "…")
     print("GAME_ID dtype:", pbp["GAME_ID"].dtype)
-    print("Nulls snapshot:",
-          pbp[["GAME_ID","POSS_SEQ","MARGIN_PRE","MARGIN_POST","TARGET_POINTS_AHEAD"]].isna().mean().round(3).to_dict())
+    print(
+        "Nulls snapshot:",
+        pbp[["GAME_ID", "POSS_SEQ", "MARGIN_PRE", "MARGIN_POST", "TARGET_POINTS_AHEAD"]]
+        .isna()
+        .mean()
+        .round(3)
+        .to_dict(),
+    )
 
     # ---- write
     # ---- coalesce possible _x/_y after merges (safety) ----
@@ -293,7 +370,7 @@ def build_features():
         _coalesce_xy(pbp, base)
 
     # If we somehow duplicated TARGET_POINTS_AHEAD, keep the first and drop the rest
-    if (list(pbp.columns).count("TARGET_POINTS_AHEAD") > 1):
+    if list(pbp.columns).count("TARGET_POINTS_AHEAD") > 1:
         seen = 0
         keep_cols = []
         for c in pbp.columns:
@@ -308,27 +385,49 @@ def build_features():
     # ---- select a thin, unique schema for event_features ----
     KEEP = [
         # keys / indexing
-        "GAME_ID", "POSS_SEQ", "EVENTNUM", "PERIOD", "PCTIMESTRING",
+        "GAME_ID",
+        "POSS_SEQ",
+        "EVENTNUM",
+        "PERIOD",
+        "PCTIMESTRING",
         # event typing & context
-        "EVTYPE", "BIGRAM", "TRIGRAM",
+        "EVTYPE",
+        "BIGRAM",
+        "TRIGRAM",
         # clocks / bins
-        "CLOCK_SEC", "CLOCK_BIN", "EVENT_IDX",
+        "CLOCK_SEC",
+        "CLOCK_BIN",
+        "EVENT_IDX",
         # margin & labels
-        "MARGIN_PRE", "MARGIN_POST", "MARGIN_BIN", "RESULT_CLASS", "TARGET_POINTS_AHEAD",
+        "MARGIN_PRE",
+        "MARGIN_POST",
+        "MARGIN_BIN",
+        "RESULT_CLASS",
+        "TARGET_POINTS_AHEAD",
         # offense / bonus
-        "OFF_SIDE", "HOME_BONUS", "AWAY_BONUS", "OFF_BONUS",
+        "OFF_SIDE",
+        "HOME_BONUS",
+        "AWAY_BONUS",
+        "OFF_BONUS",
         # recent context
-        "RCNT3_MAKE", "RCNT3_MISS", "RCNT3_TO",
+        "RCNT3_MAKE",
+        "RCNT3_MISS",
+        "RCNT3_TO",
         # optional lineups
-        "ON_COURT_MIA", "ON_COURT_BOS",
+        "ON_COURT_MIA",
+        "ON_COURT_BOS",
         # (optional) helpful text for UI hover
-        "HOMEDESCRIPTION", "VISITORDESCRIPTION", "NEUTRALDESCRIPTION", "TEXT",
+        "HOMEDESCRIPTION",
+        "VISITORDESCRIPTION",
+        "NEUTRALDESCRIPTION",
+        "TEXT",
     ]
     KEEP = [c for c in KEEP if c in pbp.columns]
     pbp = pbp.loc[:, KEEP]
 
     pbp.to_parquet(OUT, index=False)
     print(f"✅ Wrote {OUT} with {len(pbp)} rows.")
+
 
 if __name__ == "__main__":
     build_features()
