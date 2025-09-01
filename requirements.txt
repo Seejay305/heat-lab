@@ -18,3 +18,7 @@ black
 isort
 flake8
 mypy
+lightgbm==4.6.0
+scikit-learn==1.7.1
+pandas==2.3.1
+numpy==2.3.2
